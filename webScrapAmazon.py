@@ -1,19 +1,9 @@
 from bs4 import BeautifulSoup
 from selenium import webdriver
+from webdriver_manager.chrome import ChromeDriverManager
+import pandas as pd
 
-def main(search_term):
-    driver = webdriver.Chrome(executable_path='/Users/margheritabonfiglio/Downloads/chromedriver')
-    records =[]
-    url = get_url(search_term)
-    for page in range(1, 21):
-        driver.get(url.format(page))
-        soup = BeautifulSoup(driver.page_source, 'html.parser')
-        results = soup.find_all('div', {'data-component-type': 's-search-result'})
-        for item in results:
-            record = extract_record(item)
-            if record:
-                records.append(record)
-    driver.close()
+
 
 def get_url(search_term):
     template= "https://www.amazon.com/s?k={}&ref=nb_sb_noss_1"
@@ -23,23 +13,29 @@ def get_url(search_term):
     url+='&page()'
     return url
 
-def extract_record(item):
-    atag = item.h2.a
-    description = atag.text.strip()
-    url = 'https://www.amazon.com' + atag.get('href')
 
-    try:
-        price_parent = item.find('span', 'a-price').text
-        price = price_parent.find('span', 'a-offscreen').text
-    except AttributeError:
-        return
+def main(search_term):
+    driver = webdriver.Chrome(ChromeDriverManager().install())
+    url = get_url(search_term)
+    names = []
+    prices = []
+    for page in range(1, 21):
+        driver.get(url.format(page))
+        soup = BeautifulSoup(driver.page_source, 'html.parser')
+        name = soup.findAll('span', class_='a-size-medium a-color-base a-text-normal')
+        price = soup.findAll('span', class_='a-price')
+        for i in range(1, len(name)):
+            names.append(name[i].text)
+            prices.append(price[i].text)
+    driver.close()
 
-    try:
-        rating = item.i.text
+    open('web_scrap_amazon.csv', 'w', newline='', encoding ='utf-8')
+    df = pd.DataFrame({'names': names,
+                   'prices': prices})
+    df.to_csv('web_scrap_amazon.csv')
 
-    except AttributeError:
-        rating = ''
 
-    result = (description, price, rating, url)
+main("")
 
-    return result
+
+
