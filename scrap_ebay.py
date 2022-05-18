@@ -26,6 +26,15 @@ countries = {
 # Search through ebay
 def search_ebay(products_names, products_prices, products_urls, toSearch_product, selected_country, pages):
 
+    # Find if the user input is a link or a name
+    if 'ebay.' in toSearch_product:
+        # Request url
+        response = requests.get(toSearch_product)
+
+        soup = BeautifulSoup(response.text, "html.parser")
+
+        toSearch_product = soup.find('h1', class_ = 'x-item-title__mainTitle').find('span', class_ = 'ux-textspans ux-textspans--BOLD').text
+
     # Construct the url
     for page in range(1,pages):
         products_urls = []
@@ -57,3 +66,4 @@ def search_ebay(products_names, products_prices, products_urls, toSearch_product
         else:
             products_prices.append(float(prices[i].text.replace('EUR','').replace('.','').replace(',','.').strip()))
     return products_urls
+
