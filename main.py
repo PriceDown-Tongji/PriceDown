@@ -8,6 +8,7 @@ from tkinter import messagebox as msg
 from tkinter import simpledialog
 from pandastable import Table
 from scrap_ebay import search_ebay
+from scrap_amazon import search_amazon
 import tkinter as tk
 # from tkintertable import TableCanvas
 # from tkinter import filedialog
@@ -87,6 +88,7 @@ class csv_to_excel:
 
         if 'amazon' in toSearch_product:
             # Call amazon web scraping function
+            search_amazon(products_names, products_prices, products_urls, toSearch_product, selected_country, pages):
             print("Amazon")
         elif 'ebay' in toSearch_product:
             # Call ebay web scraping function
