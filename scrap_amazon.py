@@ -65,7 +65,7 @@ def get_float(price, symbol):
     return price_float
 
 #main function
-def scrap_amazon(products_names, products_prices, products_urls, toSearch_product, selected_country, pages):
+def search_amazon(products_names, products_prices, products_urls, toSearch_product, selected_country, pages):
     #identifies if the input is a url or a word
     if '/' in toSearch_product:
         toSearch_product = get_search_term(toSearch_product)
