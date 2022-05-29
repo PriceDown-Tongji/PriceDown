@@ -20,7 +20,7 @@ COUNTRIES={"italy": "italian",
           "thailandia": "thai"}
 
 #input from user
-def search(products_names, products_prices, products_urls, toSearch_product, selected_country, pages):
+def search_alibaba(products_names, products_prices, products_urls, toSearch_product, selected_country, pages):
     
     # Find if the user input is a link or a name
     if "alibaba." in product_name:
