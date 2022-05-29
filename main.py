@@ -9,6 +9,7 @@ from tkinter import simpledialog
 from pandastable import Table
 from scrap_ebay import search_ebay
 from scrap_amazon import search_amazon
+from scrap_alibaba import search_alibaba
 import tkinter as tk
 # from tkintertable import TableCanvas
 # from tkinter import filedialog
@@ -88,19 +89,20 @@ class csv_to_excel:
 
         if 'amazon' in toSearch_product:
             # Call amazon web scraping function
-            search_amazon(products_names, products_prices, products_urls, toSearch_product, selected_country, pages):
-            print("Amazon")
+            search_amazon(products_names, products_prices, products_urls, toSearch_product, selected_country, pages)
+            products_urls.pop(0)
         elif 'ebay' in toSearch_product:
             # Call ebay web scraping function
             products_urls = search_ebay(products_names, products_prices, products_urls, toSearch_product, selected_country, pages)
+            products_urls.pop(0)
         elif 'alibaba' in toSearch_product:
             # Call alibaba web scraping function
-            print("Amazon")
+            search_alibaba(products_names, products_prices, products_urls, toSearch_product, selected_country, pages)
         else:
             # Search the product name through all websites
             products_urls = search_ebay(products_names, products_prices, products_urls, toSearch_product, selected_country, pages)
-
-        products_urls.pop(0) # First element is empty
+            products_urls.pop(0)
+        # First element is empty
 
         # Put all the results in a csv file
         df = pd.DataFrame({"Products":products_names, "Prices": products_prices, "Link": products_urls})
