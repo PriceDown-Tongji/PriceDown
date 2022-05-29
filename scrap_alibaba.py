@@ -23,10 +23,10 @@ COUNTRIES={"italy": "italian",
 def search_alibaba(products_names, products_prices, products_urls, toSearch_product, selected_country, pages):
     
     # Find if the user input is a link or a name
-    if "alibaba." in product_name:
-        product_name=product_name.split("/")[4]
-        product_name=product_name.split("_")[0]
-        product_name=product_name.replace("-"," ")
+    if "alibaba." in toSearch_product:
+        toSearch_product=toSearch_product.split("/")[4]
+        toSearch_product=toSearch_product.split("_")[0]
+        toSearch_product=toSearch_product.replace("-"," ")
 
     #initial contruct of the url
     if selected_country=="china":
@@ -36,12 +36,12 @@ def search_alibaba(products_names, products_prices, products_urls, toSearch_prod
     else:
         template="https://"+ COUNTRIES[selected_country]+".alibaba.com/trade/search?fsb=y&IndexArea=product_en&CatId=&SearchText="
     
-    product_name=product_name.replace(" ","+")
+    toSearch_product=toSearch_product.replace(" ","+")
 
     #construction of url according to pade
     for i in range(pages): 
         page_number="&page="+str(i)+"&f0=y"
-        url= template+product_name+page_number
+        url= template+toSearch_product+page_number
         #request to url
         html_text=requests.get(url).text
 
