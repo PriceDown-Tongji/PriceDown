@@ -2,6 +2,7 @@
 
 # This is the main function script
 
+from multiprocessing.sharedctypes import Value
 import pandas as pd
 from tkinter import *
 from tkinter import messagebox as msg
@@ -24,8 +25,17 @@ class csv_to_excel:
                        height = 200,
                        width = 300)
 
+        w = 300
+        h = 200
+        ws = root.winfo_screenwidth()
+        hs = root.winfo_screenheight()
+        x = (ws-2.7*w)/2
+        y = (hs-3.2*h)/2
+        root.geometry(f'{w}x{h}+{int(x)}+{int(y)}')
         # Place the frame on root window
         self.f.pack()
+        
+        
 
         # Creating label widgets
         self.message_label = Label(self.f,
@@ -71,44 +81,52 @@ class csv_to_excel:
         # Input from user
 
         ROOT = tk.Tk()
-
+        
         ROOT.withdraw()
-
         # the input dialog
         toSearch_product = simpledialog.askstring(title="Product",
-                                 prompt="What's the name of the product?:").replace(" ","+").strip() # Replace space with + for the url composition
+                                prompt="What's the name of the product?:").replace(" ","+").strip() # Replace space with + for the url composition
         selected_country = simpledialog.askstring(title="Country",
-                                 prompt="Enter the name of the country:").upper()
-        pages = int(simpledialog.askstring(title="Pages",
-                                 prompt="How many pages do you want to scrap?:"))
+                                prompt="Enter the name of the country:").upper()
+        website = simpledialog.askstring(title="Websites",
+                                prompt="Enter the website:").upper()
+        try:
+            pages = int(simpledialog.askstring(title="Pages",
+                                        prompt="How many pages do you want to scrap?:"))
+        except ValueError:
+            msg.showerror('Input Error', 'Please input some valid values')
+            return None         
 
         # Lists to store the data obtained from websites
         products_names = []
         products_prices = []
         products_urls = []
-
-        if 'amazon' in toSearch_product:
+        if 'amazon' in toSearch_product or website=="AMAZON":
             # Call amazon web scraping function
             search_amazon(products_names, products_prices, products_urls, toSearch_product, selected_country, pages)
-            products_urls.pop(0)
-        elif 'ebay' in toSearch_product:
+
+        elif 'ebay' in toSearch_product or website=="EBAY":
             # Call ebay web scraping function
             products_urls = search_ebay(products_names, products_prices, products_urls, toSearch_product, selected_country, pages)
-            products_urls.pop(0)
-        elif 'alibaba' in toSearch_product:
+
+        elif 'alibaba' in toSearch_product or website== "ALIBABA":
             # Call alibaba web scraping function
             search_alibaba(products_names, products_prices, products_urls, toSearch_product, selected_country, pages)
         else:
             # Search the product name through all websites
             products_urls = search_ebay(products_names, products_prices, products_urls, toSearch_product, selected_country, pages)
-            products_urls.pop(0)
+            search_alibaba(products_names, products_prices, products_urls, toSearch_product, selected_country, pages)
+            search_amazon(products_names, products_prices, products_urls, toSearch_product, selected_country, pages)
+
         # First element is empty
+        products_urls.pop(0)
 
         # Put all the results in a csv file
         df = pd.DataFrame({"Products":products_names, "Prices": products_prices, "Link": products_urls})
         # Sorting results
         sorted_df=df.sort_values(by=["Prices"])
-        sorted_df.to_csv('results.csv')
+        sorted_df.to_csv('results.csv',index=False)
+
 
         try:
             self.file_name = 'results.csv'
@@ -122,7 +140,7 @@ class csv_to_excel:
 
                 # saves in the current directory
                 with pd.ExcelWriter('result.xls') as writer:
-                    df.to_excel(writer,'Products found')
+                    df.to_excel(writer,'Products found',index=False)
                     writer.save()
 
         except FileNotFoundError as e:
