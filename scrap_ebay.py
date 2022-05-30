@@ -11,16 +11,33 @@ countries = {
     'CANADA': 'ca',
     'GERMANY': 'de',
     'FRANCE': 'fr',
-    'JAPAN': 'co.jp',
+    'JAPAN': 'com',
     'BRAZIL': 'br',
     'AUSTRIA': 'at',
     'ITALY': 'it',
     'SPAIN': 'es',
-    'CHINA': 'cn',
+    'CHINA': 'com',
     'MEXICO': 'com.mx',
     'AUSTRALIA': 'com.au',
     'NETHERLANDS': 'nl',
     'INDIA': 'in'
+}
+
+contrystring = {
+    'ITALY': 'a',
+    'UNITED KINGDOM': 'to',
+    'UNITED STATES': 'com',
+    'CANADA': 'to',
+    'GERMANY': 'bis',
+    'FRANCE': 'à',
+    'BRAZIL': 'to',
+    'AUSTRIA': 'bis',
+    'SPAIN': 'a',
+    'CHINA': 'to',
+    'MEXICO': 'to',
+    'AUSTRALIA': 'to',
+    'NETHERLANDS': 'to',
+    'INDIA': 'to'
 }
 
 # Search through ebay
@@ -60,10 +77,9 @@ def search_ebay(products_names, products_prices, products_urls, toSearch_product
         # Get the price and convert it to float
 
         res = prices[i].text
-        if ('a' in res):
-            res = res[:res.index(sub_str) + len(sub_str)].strip("a").replace('EUR','').replace('.','').replace(',','.').strip()
+        if (sub_str in res):
+            res = res[:res.index(sub_str) + len(sub_str)].strip(sub_str).replace('EUR','').replace('.','').replace(',','.').strip()
             products_prices.append(float(res))
         else:
             products_prices.append(float(prices[i].text.replace('EUR','').replace('.','').replace(',','.').strip()))
     return products_urls
-
