@@ -44,7 +44,6 @@ def search_alibaba(products_names, products_prices, products_urls, toSearch_prod
     for i in range(pages): 
         page_number="&page="+str(i)+"&f0=y"
         url= template+toSearch_product+page_number
-        print(url)
         #request to url
         html_text=requests.get(url).text
         try:
